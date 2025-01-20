@@ -6,9 +6,39 @@ title: 背包九讲
 
 ## 1.01背包问题
 每件物品只能选一次
-```python
-def test():
-    print("hello,world!")
+```c++
+/*
+f[i][j]:前i个物品当前使用的总体积不超过j的情况下,所能获得的最大价值
+result=max{f[n][0~v]}
+1.不选第i个物品,f[i][j]=f[i-1][j];
+2.选第i个物品,f[i][j]=f[i-1][j-v[i]]+val[i];
+f[i][j]=max{1,2}
+f[0][0]=0;初始化
+*/
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+using namespace std;
+
+const int N=1010;
+
+int n,m;
+int f[N][N]; //c++默认初始化成0
+int v[N],w[N]; //v代表体积,w代表价值
+int main()
+{
+    cin>>n>>m;
+    for (int i=1;i<=n;i++) cin>>v[i]>>w[i];
+    
+    for (int i=1;i<=n;i++)
+        for (int j=0;j<=m;j++)
+        {
+            f[i][j]=f[i-1][j];
+            if (j>=v[i]) f[i][j]=max(f[i-1][j],f[i-1][j-v[i]]+w[i]);
+        }
+    cout<<f[n][m]<<endl;
+    return 0;
+}
 ```
 
 ## 2.完全背包问题
