@@ -11,7 +11,7 @@
 </head>
 <body>
     <a class="btn btn-primary" href="index.html" role="button">回到首页</a>
-    <h1 style="color: blueviolet;text-align: center;">dp问题汇总</h2>
+    <h1 class="Parisienne" style="font-size:80px;color: #6ea8fe;text-align: center;">dp</h1>
     <div class="d-flex justify-content-evenly">
         <!--有序列表-->
         <div>
@@ -123,6 +123,32 @@
             /* 固定宽度 300px */
             box-sizing: border-box;
             /* 确保 padding、border 不影响 width 的计算 */
+        }
+    </style>
+    <style>
+        /* 引用字体文件 */
+        @font-face {
+            font-family: "CustomFont1"; /* 定义字体名称 */
+            src: url("fonts/GreatVibes-Regular.ttf") format("truetype"); /* 引用字体文件 */
+        }
+        @font-face {
+            font-family: "CustomFont2"; /* 定义字体名称 */
+            src: url("fonts/Parisienne-Regular.ttf") format("truetype"); /* 引用字体文件 */
+        }
+        @font-face {
+            font-family: "CustomFont3"; /* 定义字体名称 */
+            src: url("fonts/ZCOOLKuaiLe-Regular.ttf") format("truetype"); /* 引用字体文件 */
+        }
+
+        /* 使用自定义字体 */
+        .GreatVibes {
+            font-family: "CustomFont1", sans-serif; /* 优先使用自定义字体 */
+        }
+        .Parisienne {
+            font-family: "CustomFont2", sans-serif; /* 优先使用自定义字体 */
+        }
+        .ZCOOLKuaiLe {
+            font-family: "CustomFont3", sans-serif; /* 优先使用自定义字体 */
         }
     </style>
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
