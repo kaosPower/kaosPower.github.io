@@ -3,7 +3,7 @@ layout: default
 title: 背包九讲
 ---
 <head>
-    <link rel="icon" type="image/x-icon" href="images/ak.png">
+    <link rel="icon" href="images/ak.png?v=2" type="image/x-icon">
 </head>
 # 背包九讲
 注意当空间优化成1维后,只有完全背包和多重背包单调队列优化体积是从小到大循环的,其余所有背包问题都是从大到小循环的
