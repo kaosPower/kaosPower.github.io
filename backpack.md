@@ -1,8 +1,10 @@
 ---
 layout: default
 title: 背包九讲
-favicon: images/ak.png
 ---
+<head>
+    <link rel="icon" type="image/x-icon" href="images/ak.png">
+</head>
 # 背包九讲
 注意当空间优化成1维后,只有完全背包和多重背包单调队列优化体积是从小到大循环的,其余所有背包问题都是从大到小循环的
 
@@ -221,7 +223,57 @@ int main()
 
 ## 4.混合背包问题
 物品一共有很多种,有各种信息
+```c++
+#include <iostream>
+#include <cstring>
+#include <algorithm>
 
+using namespace std;
+const int N=1010;
+
+int n,m;
+int f[N];
+
+struct Thing
+{
+    int kind;
+    int v,w;
+};
+vector<Thing> things;
+int main()
+{
+    cin>>n>>m;
+    //输入时分01背包,完全背包,多重背包讨论,同时将多重背包利用二进制分组转化成01背包
+    for (int i=0;i<n;i++)
+    {
+        int v,w,s;
+        cin>>v>>w>>s;
+        if (s<0) things.push_back({-1,v,w});
+        else if (s==0) things.push_back({0,v,w});
+        else
+        {
+            for (int k=1;k<=s;k*=2){
+                s-=k;
+                things.push_back({-1,v*k,w*k});
+            }
+            if (s>0) things.push_back({-1,v*s,w*s});
+        }
+    }
+    //分01背包和完全背包两种情况求解,多重背包在输入时已经转化成了01背包
+    for (auto thing:things)
+    {
+        if (thing.kind<0){
+            for (int j=m;j>=thing.v;j--) f[j]=max(f[j],f[j-thing.v]+thing.w);
+        }
+        else
+        {
+            for (int j=thing.v;j<=m;j++) f[j]=max(f[j],f[j-thing.v]+thing.w);
+        }
+    }
+    cout<<f[m]<<endl;
+    return 0;
+}
+```
 ## 5.二维费用的背包问题
 有两个维度的限制
 
