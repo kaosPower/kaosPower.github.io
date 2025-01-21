@@ -4,7 +4,13 @@ title: 背包九讲
 favicon: images/ak.png
 ---
 # 背包九讲
+注意当空间优化成1维后,只有完全背包和多重背包单调队列优化体积是从小到大循环的,其余所有背包问题都是从大到小循环的
 
+```c++
+for 物品
+	for 体积
+		for 决策
+```
 ## 1.01背包问题
 每件物品只能选一次
 ```c++
@@ -128,6 +134,85 @@ int main()
         for (int j=m;j>=0;j--)
             for (int k=1;k<=s && k*v<=j;k++)
                 f[j]=max(f[j],f[j-k*v]+k*w);
+    }
+    cout<<f[m]<<endl;
+    return 0;
+}
+```
+```c++
+//多重背包二进制分组优化
+/*
+将多重背包转化成01背包,复制s份,变成01背包问题
+7,
+*/
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+#include <vector>
+using namespace std;
+
+const int N=2010;
+int n,m;
+int f[N];
+
+struct Good
+{
+    int v,w;
+};
+
+int main()
+{	
+    vector<Good> goods;
+    cin>>n>>m;
+    for (int i=0;i<n;i++)
+    {
+        int v,w,s;
+        cin>>v>>w>>s;
+        for (int k=1;k<=s;k*=2)
+        {
+            s-=k;
+            goods.push_back({v*k,w*k});
+        }
+        if (s>0) goods.push_back({v*s,w*s});
+    }
+    for (auto good:goods)
+        for (int j=m;j>=good.v;j--)
+            f[j]=max(f[j],f[j-good.v]+good.w);
+    cout<<f[m]<<endl;
+    return 0;
+}
+```
+```c++
+//单调队列优化+空间压缩(滚动数组实现)
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+const int N=20010;
+int n,m;
+int f[N],g[N],q[N];
+int main()
+{
+    cin>>n>>m;
+    for (int i=0;i<n;i++)
+    {
+        int v,w,s;
+        cin>>v>>w>>s;
+        memcpy(g,f,sizeof f);
+        for (int j=0;j<v;j++)
+        {
+            //单调队列
+            int hh=0,tt=-1;
+            for (int k=j;k<=m;k+=v)
+            {
+                if (hh<=tt && q[hh]<k-s*v) hh++;
+                if (hh<=tt) f[k]=max(f[k],g[q[hh]]+(k-q[hh])/v*w);
+                while (hh<=tt && g[q[tt]]-(q[tt]-j)/v*w<=g[k]-(k-j)/v*w) tt--;
+                q[++tt]=k;
+            }
+        }
     }
     cout<<f[m]<<endl;
     return 0;
