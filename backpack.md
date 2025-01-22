@@ -274,13 +274,199 @@ int main()
 ```
 ## 5.二维费用的背包问题
 有两个维度的限制
+```c++
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N=110;
+
+int n,v,m;
+int f[N][N];
+
+int main()
+{
+    cin>>n>>v>>m;
+    for (int i=0;i<n;i++)
+    {
+        int a,b,c;
+        cin>>a>>b>>c;
+        for (int j=v;j>=a;j--)
+            for (int k=m;k>=b;k--)
+                f[j][k]=max(f[j][k],f[j-a][k-b]+c);
+                
+    }
+    cout<<f[v][m]<<endl;
+    return 0;
+}
+```
 
 ## 6.分组背包问题
 把各种物品分成若干组,组内每种物品只能选一件
+```c++
+#include <iostream>
+#include <cstring>
+#include <algorithm>
+
+using namespace std;
+
+const int N=110;
+
+int n,m;
+int f[N],v[N],w[N];
+
+int main()
+{
+    cin>>n>>m;
+    for (int i=0;i<n;i++)
+    {
+        int s;
+        cin>>s;
+        for (int j=0;j<s;j++) cin>>v[j]>>w[j];
+        for (int j=m;j>=0;j--)
+            for (int k=0;k<s;k++)
+                if (j>=v[k])
+                	f[j]=max(f[j],f[j-v[k]]+w[k]);
+    }
+    cout<<f[m]<<endl;
+    return 0;
+}
+```
 
 ## 7.背包问题求方案数
+```c++
+//f[i][j]=max(f(i-1,j),f(i-1,j-vi)+wi),此题f[i][j]为了方便表示恰好等于v而不是<=v
+//g[i][j]:f[i][j]取最大值的方案数
+
+#include <cstring>
+#include <iostream>
+using namespace std;
+
+const int N=1010,mod=1e9+7;
+
+int n,m;
+int f[N],g[N]; //g[j]保存体积恰好是j的方案数
+
+int main()
+{
+    cin>>n>>m;
+    
+    memset(f,-0x3f,sizeof f); //将f[j]初始化成负无穷,j!=0
+    f[0]=0;
+    g[0]=1;
+    for (int i=0;i<n;i++)
+    {
+        int v,w;
+        cin>>v>>w;
+        for (int j=m;j>=v;j--)
+        {
+            int maxv=max(f[j],f[j-v]+w);
+            int cnt=0;
+            if (maxv==f[j]) cnt+=g[j];
+            if (maxv==f[j-v]+w) cnt+=g[j-v];
+            g[j]=cnt%mod;
+            f[j]=maxv;
+        
+        }
+    }
+    int res=0;
+    for (int i=0;i<=m;i++) res=max(res,f[i]);
+	int cnt=0;
+    for (int i=0;i<=m;i++)
+        if (res==f[i])
+            cnt=(cnt+g[i])%mod;
+    cout<<cnt<<endl;
+    return 0;
+}
+```
 
 ## 8.求背包问题方案
+```c++
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+using namespace std;
+const int N=1010;
 
+int n,m;
+int v[N],w[N],f[N][N];
+
+int main()
+{
+    cin>>n>>m;
+    for (int i=1;i<=n;i++) cin>>v[i]>>w[i];
+    //从后往前枚举
+    for (int i=n;i>=1;i--)
+        for (int j=0;j<=m;j++)
+        {
+            f[i][j]=f[i+1][j];
+            if (j>=v[i]) f[i][j]=max(f[i][j],f[i+1][j-v[i]]+w[i]);
+        }
+    int vol=m;
+    for (int i=1;i<=n;i++)
+        if (vol>=v[i] && f[i][vol]==f[i+1][vol-v[i]]+w[i])
+        {
+            cout<<i<<' ';
+            vol-=v[i];
+        }
+    return 0;
+}
+```
 ##  9.有依赖的背包问题
 选某个物品必须先选它依赖的物品
+```c++
+//树形dp
+//转化成分组背包
+//时间复杂度O(n^3)
+#include <cstring>
+#include <iostream>
+#include <algorithm>
+
+using namespace std;
+
+const int N=110;
+
+int n,m;
+int v[N],w[N];
+int h[N],e[N],ne[N],idx;
+int f[N][N];
+
+//邻接表基本操作
+void add(int a,int b)
+{
+    e[idx]=b,ne[idx]=h[a],h[a]=idx++;
+}
+void dfs(int u)
+{
+    for (int i=h[u];~i;i=ne[i]) //循环物品组,~i等价于i!=-1
+    {
+        int son=e[i];
+        dfs(e[i]);
+        //分组背包
+        for (int j=m-v[u];j>=0;j--) //循环体积
+            for (int k=0;k<=j;k++) //循环决策
+                f[u][j]=max(f[u][j],f[u][j-k]+f[son][k]);
+    }
+    //将物品u加进去
+    for (int i=m;i>=v[u];i--) f[u][i]=f[u][i-v[u]]+w[u];
+    for (int i=0;i<v[u];i++) f[u][i]=0;
+}
+int main()
+{
+    cin>>n>>m;
+    memset(h,-1,sizeof h);
+    int root;
+    for (int i=1;i<=n;i++)
+    {
+        int p;
+        cin>>v[i]>>w[i]>>p;
+        if (p==-1) root=i;
+        else add(p,i);
+        
+    }
+    dfs(root);
+    cout<<f[root][m]<<endl;
+    return 0;
+}
+```
