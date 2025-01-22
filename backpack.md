@@ -381,7 +381,7 @@ int main()
 }
 ```
 
-## 8.求背包问题方案
+## 8.背包问题求具体方案
 ```c++
 #include <cstring>
 #include <iostream>
