@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>刷题记录</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table {
+            margin-top: 20px;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .config {
+            margin-bottom: 20px;
+        }
+        /* 自定义弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 20px;
+            z-index: 1000;
+            text-align: center;
+        }
+        .modal button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .modal button:hover {
+            background-color: #0056b3;
+        }
+        /* 背景遮罩 */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+<h1>刷题记录</h1>
+
+<!-- 自定义 n 的输入框 -->
+<div class="config">
+    <label for="base-number">总题量</label>
+    <input type="number" id="base-number" value="20" oninput="updateResults()">
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>已完成</th>
+        <th>剩余</th>
+    </tr>
+    </thead>
+    <tbody id="table-body">
+    <tr>
+        <td><input type="number" placeholder="请输入已完成数量" oninput="calculate(this)"></td>
+        <td class="result"></td>
+    </tr>
+    </tbody>
+</table>
+<button onclick="addRow()">添加新行</button>
+
+<!-- 自定义弹窗 -->
+<div class="overlay" id="overlay"></div>
+<div class="modal" id="modal">
+    <p>恭喜你完成今日任务</p>
+    <button onclick="closeModal()">确定</button>
+</div>
+
+<script>
+    // 动态计算 n - x
+    function calculate(input) {
+        const baseNumber = parseInt(document.getElementById("base-number").value) || 0; // 获取 n 的值并转换为整数
+        const x = parseInt(input.value) || 0; // 获取输入值 x 并转换为整数
+
+        // 检测 x 是否等于 20
+        if (x === 20) {
+            showModal(); // 显示自定义弹窗
+        }
+
+        const resultCell = input.parentElement.nextElementSibling; // 获取结果单元格
+        resultCell.textContent = baseNumber - x; // 计算结果并显示为整数
+    }
+
+    // 更新所有行的计算结果
+    function updateResults() {
+        const inputs = document.querySelectorAll("#table-body input[type='number']");
+        inputs.forEach(input => calculate(input)); // 遍历每行重新计算
+    }
+
+    // 添加新行
+    function addRow() {
+        const tableBody = document.getElementById("table-body");
+        const newRow = document.createElement("tr");
+
+        newRow.innerHTML = `
+        <td><input type="number" placeholder="输入 x" oninput="calculate(this)"></td>
+        <td class="result"></td>
+      `;
+
+        tableBody.appendChild(newRow);
+    }
+
+    // 显示自定义弹窗
+    function showModal() {
+        document.getElementById("overlay").style.display = "block";
+        document.getElementById("modal").style.display = "block";
+    }
+
+    // 关闭自定义弹窗
+    function closeModal() {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("modal").style.display = "none";
+    }
+</script>
+</body>
+</html>
